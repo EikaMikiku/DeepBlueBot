@@ -150,7 +150,7 @@ Leaderboard.prototype.getRank = function(getNick, userID) {
 	let maxRating = userData.ratings.maxRating ? maxArray.indexOf(userData.ratings.maxRating)+1 : null;
 	let output = {
 		"embed": {
-			"title": "Your rating positions",
+			"title": "Rating positions for: " + getNick(serverID, userID),
 			"description": ""
 		}
 	};

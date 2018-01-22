@@ -216,7 +216,7 @@ function onTrackError(serverID, msg) {
 }
 
 function getMemberFromMention(guild, text) {
-	if(!text.startsWith("<@!") || !text.endsWith(">")) {
+	if(!text.startsWith("<@") || !text.endsWith(">")) {
 		return null;
 	}
 	text = text.replace(/[^\d]/g, "");

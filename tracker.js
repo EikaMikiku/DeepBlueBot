@@ -37,8 +37,12 @@ Tracker.prototype.initUpdateCycle = function() {
 			if(this.afterUpdate.length > 0) {
 				console.log("After update items found", this.afterUpdate);
 				this.stopUpdating = true;
-				this.processAfterUpdate().catch(console.log)
+				this.processAfterUpdate()
 				.then(() => {
+					this.stopUpdating = false;
+					setTimeout(() => this.initUpdateCycle(), this.updateDelay);
+				}).catch((e) => {
+					console.log(e);
 					this.stopUpdating = false;
 					setTimeout(() => this.initUpdateCycle(), this.updateDelay);
 				});
