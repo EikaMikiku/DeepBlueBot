@@ -201,6 +201,37 @@ client.on("message", (message) => {
 		}
 		return;
 	}
+
+	//LEAGUE ROLE TOGGLE
+	if(splitMsg[0].toLowerCase() === "!league") {
+		let leagueRole = message.member.roles.find("name", settings.leagueRoleName);
+		if(leagueRole) {
+			//Remove the role
+			message.member.removeRole(leagueRole).catch(console.error);
+			message.channel.send("League role removed.");
+		} else {
+			//Add the role
+			let role = message.guild.roles.find("name", settings.leagueRoleName);
+			message.member.addRole(role).catch(console.error);
+			message.channel.send("League role added.");
+		}
+	}
+
+	//ARENA ROLE TOGGLE
+	if(splitMsg[0].toLowerCase() === "!arena") {
+		let arenaRole = message.member.roles.find("name", settings.arenaRoleName);
+		if(arenaRole) {
+			//Remove the role
+			message.member.removeRole(arenaRole).catch(console.error);
+			message.channel.send("Arena role removed.");
+		} else {
+			//Add the role
+			let role = message.guild.roles.find("name", settings.arenaRoleName);
+			message.member.addRole(role).catch(console.error);
+			message.channel.send("Arena role added.");
+		}
+	}
+
 });
 
 client.login(settings.token);
@@ -431,6 +462,12 @@ function getHelpEmbed() {
 		},{
 			"name": "!MyRank",
 			"value": "Displays your current rank."
+		},{
+			"name": "!Arena",
+			"value": "Toggles arena role."
+		},{
+			"name": "!League",
+			"value": "Toggles league role."
 		},{
 			"name": "!Lichess [Lichess username] [@Discord User Mention]",
 			"value": "Links discord user to a specific username on Lichess."

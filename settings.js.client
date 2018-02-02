@@ -13,6 +13,10 @@ module.exports = {
 	"modChannelName": "moderation",
 	//Role which will be given to newly joined users
 	"unrankedRoleName": "Unranked",
+	//Role for the league
+	"leagueRoleName": "League",
+	//Role for the arena
+	"arenaRoleName": "Arena",
 	//Lichess profile url. "|" is replaced with username
 	"lichessProfileURL": "https://lichess.org/@/|",
 	//Chess.com profile url. "|" is replaced with username
