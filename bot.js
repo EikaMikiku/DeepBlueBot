@@ -22,7 +22,7 @@ client.on("ready", () => {
 client.on("guildMemberAdd", (guildMember) => {
 	let foundRole = guildMember.guild.roles.find("name", settings.unrankedRoleName);
 	if(foundRole) {
-		guildMember.addRole(foundRole).catch(console.error);
+		guildMember.addRole(foundRole).catch((e) => console.log(JSON.stringify(e)));
 	}
 });
 
@@ -44,11 +44,13 @@ client.on("message", (message) => {
 
 	let splitMsg = message.content.match(msgSplitRegExp);
 
+	console.log(`Command: ${message}`);
+
 	//HELP
 	if(splitMsg[0].toLowerCase() === "!dbhelp") {
 		if(splitMsg.length === 1) {
 			message.channel.send({"embed": getHelpEmbed()})
-			.catch(console.error);
+			.catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -63,11 +65,11 @@ client.on("message", (message) => {
 				tracker.removeByUsername(message.guild.id, source, splitMsg[2]);
 			} else {
 				message.channel.send("Bad second parameter (source).")
-				.catch(console.error);
+				.catch((e) => console.log(JSON.stringify(e)));
 			}
 		} else {
 			message.channel.send("Wrong amount of parameters.")
-			.catch(console.error);
+			.catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -77,7 +79,7 @@ client.on("message", (message) => {
 		if(splitMsg.length === 1) {
 			tracker.queueForceUpdate(message.member.id);
 			message.channel.send("Queued for update.")
-			.catch(console.error);
+			.catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -94,15 +96,15 @@ client.on("message", (message) => {
 					tracker.track(message.guild.id, member.id, "Lichess", splitMsg[1]);
 				} else {
 					message.channel.send("Invalid user mention given.")
-					.catch(console.error);
+					.catch((e) => console.log(JSON.stringify(e)));
 				}
 			} else {
 				message.channel.send("You do not have permission to do this.")
-				.catch(console.error);
+				.catch((e) => console.log(JSON.stringify(e)));
 			}
 		} else {
 			message.channel.send("Wrong amount of parameters.")
-			.catch(console.error);
+			.catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -119,15 +121,15 @@ client.on("message", (message) => {
 					tracker.track(message.guild.id, member.id, "Chesscom", splitMsg[1]);
 				} else {
 					message.channel.send("Invalid user mention given.")
-					.catch(console.error);
+					.catch((e) => console.log(JSON.stringify(e)));
 				}
 			} else {
 				message.channel.send("You do not have permission to do this.")
-				.catch(console.error);
+				.catch((e) => console.log(JSON.stringify(e)));
 			}
 		} else {
 			message.channel.send("Wrong amount of parameters.")
-			.catch(console.error);
+			.catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -138,7 +140,7 @@ client.on("message", (message) => {
 			let leaderboard = new LeaderboardConstructor({});
 			let list = leaderboard.getList(getNick);
 			list.embed.color = settings.embedColor;
-			message.channel.send(list).catch(console.error);
+			message.channel.send(list).catch((e) => console.log(JSON.stringify(e)));
 		} else if(splitMsg.length === 2) {
 			//Page or type
 			let val = splitMsg[1].toLowerCase();
@@ -146,7 +148,7 @@ client.on("message", (message) => {
 				val = parseInt(val);
 				if(isNaN(val)) {
 					message.channel.send("Bad second parameter (type or page).")
-					.catch(console.error);
+					.catch((e) => console.log(JSON.stringify(e)));
 					return;
 				} else {
 					let leaderboard = new LeaderboardConstructor({
@@ -154,7 +156,7 @@ client.on("message", (message) => {
 					});
 					let list = leaderboard.getList(getNick);
 					list.embed.color = settings.embedColor;
-					message.channel.send(list).catch(console.error);
+					message.channel.send(list).catch((e) => console.log(JSON.stringify(e)));
 				}
 			} else {
 				let leaderboard = new LeaderboardConstructor({
@@ -162,7 +164,7 @@ client.on("message", (message) => {
 				});
 				let list = leaderboard.getList(getNick);
 				list.embed.color = settings.embedColor;
-				message.channel.send(list).catch(console.error);
+				message.channel.send(list).catch((e) => console.log(JSON.stringify(e)));
 			}
 		} else if(splitMsg.length === 3) {
 			//Page and type
@@ -170,12 +172,12 @@ client.on("message", (message) => {
 			let page = parseInt(splitMsg[2]);
 			if(type !== "bullet" && type !== "blitz" && type !== "rapid" && type !== "classical") {
 				message.channel.send("Bad second parameter (type).")
-				.catch(console.error);
+				.catch((e) => console.log(JSON.stringify(e)));
 				return;
 			}
 			if(isNaN(page)) {
 				message.channel.send("Bad third parameter (page).")
-				.catch(console.error);
+				.catch((e) => console.log(JSON.stringify(e)));
 				return;
 			}
 			let leaderboard = new LeaderboardConstructor({
@@ -184,7 +186,7 @@ client.on("message", (message) => {
 			});
 			let list = leaderboard.getList(getNick);
 			list.embed.color = settings.embedColor;
-			message.channel.send(list).catch(console.error);
+			message.channel.send(list).catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -197,7 +199,7 @@ client.on("message", (message) => {
 			if(rank.embed) {
 				rank.embed.color = settings.embedColor;
 			}
-			message.channel.send(rank).catch(console.error);
+			message.channel.send(rank).catch((e) => console.log(JSON.stringify(e)));
 		}
 		return;
 	}
@@ -207,12 +209,12 @@ client.on("message", (message) => {
 		let leagueRole = message.member.roles.find("name", settings.leagueRoleName);
 		if(leagueRole) {
 			//Remove the role
-			message.member.removeRole(leagueRole).catch(console.error);
+			message.member.removeRole(leagueRole).catch((e) => console.log(JSON.stringify(e)));
 			message.channel.send("League role removed.");
 		} else {
 			//Add the role
 			let role = message.guild.roles.find("name", settings.leagueRoleName);
-			message.member.addRole(role).catch(console.error);
+			message.member.addRole(role).catch((e) => console.log(JSON.stringify(e)));
 			message.channel.send("League role added.");
 		}
 	}
@@ -222,12 +224,12 @@ client.on("message", (message) => {
 		let arenaRole = message.member.roles.find("name", settings.arenaRoleName);
 		if(arenaRole) {
 			//Remove the role
-			message.member.removeRole(arenaRole).catch(console.error);
+			message.member.removeRole(arenaRole).catch((e) => console.log(JSON.stringify(e)));
 			message.channel.send("Arena role removed.");
 		} else {
 			//Add the role
 			let role = message.guild.roles.find("name", settings.arenaRoleName);
-			message.member.addRole(role).catch(console.error);
+			message.member.addRole(role).catch((e) => console.log(JSON.stringify(e)));
 			message.channel.send("Arena role added.");
 		}
 	}
@@ -238,12 +240,12 @@ client.login(settings.token);
 
 function onModError(serverID, msg) {
 	let channel = getModChannel(client.guilds.get(serverID));
-	channel.send(msg).catch(console.error);
+	channel.send(msg).catch((e) => console.log(JSON.stringify(e)));
 }
 
 function onTrackError(serverID, msg) {
 	let channel = getBotChannel(client.guilds.get(serverID));
-	channel.send(msg).catch(console.error);
+	channel.send(msg).catch((e) => console.log(JSON.stringify(e)));
 }
 
 function getMemberFromMention(guild, text) {
@@ -273,7 +275,7 @@ function onRemoveSuccess(serverID, userID) {
 	let botChannel = getBotChannel(guild);
 	let member = guild.members.get(userID);
 	botChannel.send("No longer tracking " + getNick(guild.id, member.id))
-	.catch(console.error);
+	.catch((e) => console.log(JSON.stringify(e)));
 	removeRatingRole(serverID, userID);
 }
 
@@ -282,11 +284,11 @@ function removeRatingRole(serverID, userID) {
 	let member = guild.members.get(userID);
 	let roles = getMemberRatingRoles(member);
 	for(let i = 0; i < roles.length; i++) {
-		member.removeRole(roles[i]).catch(console.error);
+		member.removeRole(roles[i]).catch((e) => console.log(JSON.stringify(e)));
 	}
 	let unrankedRole = guild.roles.find("name", settings.unrankedRoleName);
 	if(unrankedRole) {
-		member.addRole(unrankedRole).catch(console.error);
+		member.addRole(unrankedRole).catch((e) => console.log(JSON.stringify(e)));
 	}
 }
 
@@ -307,7 +309,7 @@ function onTrackSuccess(serverID, userID, ratingData, source, username) {
 	let botChannel = getBotChannel(guild);
 	if(!newRole) {
 		botChannel.send("Could not find a valid role for rating " + ratingData.maxRating)
-		.catch(console.error);
+		.catch((e) => console.log(JSON.stringify(e)));
 		return;
 	}
 
@@ -316,7 +318,7 @@ function onTrackSuccess(serverID, userID, ratingData, source, username) {
 	//If user has an unranked role, remove it
 	let unranked = member.roles.find("name", settings.unrankedRoleName);
 	if(unranked) {
-		member.removeRole(unranked).catch(console.error);
+		member.removeRole(unranked).catch((e) => console.log(JSON.stringify(e)));
 	}
 	if(source === "Chesscom") {
 		source = "Chess.com";
@@ -338,7 +340,7 @@ function onTrackSuccess(serverID, userID, ratingData, source, username) {
 				"description": description,
 				"color": settings.embedColor
 			}
-		}).catch(console.error);
+		}).catch((e) => console.log(JSON.stringify(e)));
 	}).catch(function(error) {
 		console.log("Error adding new role", error);
 	});
@@ -359,7 +361,7 @@ function onRatingUpdate(serverID, userID, oldData, ratingData, source, username)
 	let newRole = findRoleForRating(guild, ratingData.maxRating);
 	if(!newRole) {
 		botChannel.send("Could not find a valid role for rating " + ratingData.maxRating)
-		.catch(console.error);
+		.catch((e) => console.log(JSON.stringify(e)));
 		return;
 	}
 	let currentRoles = getMemberRatingRoles(member);
@@ -367,7 +369,7 @@ function onRatingUpdate(serverID, userID, oldData, ratingData, source, username)
 		let role = currentRoles[i];
 		if(role.name !== newRole.name) {
 			//Remove other rating roles if exist
-			member.removeRole(role).catch(console.error);
+			member.removeRole(role).catch((e) => console.log(JSON.stringify(e)));
 		}
 	}
 	//Add new role
@@ -385,7 +387,7 @@ function onRatingUpdate(serverID, userID, oldData, ratingData, source, username)
 					"description": description,
 					"color": settings.embedColor
 				}
-			}).catch(console.error);
+			}).catch((e) => console.log(JSON.stringify(e)));
 		}).catch((error) => {
 			console.log("Error adding new role", error);
 		});

@@ -30,7 +30,7 @@ Tracker.prototype.initUpdateCycle = function() {
 	if(userData && !this.stopUpdating) {
 		this.updating = true;
 		this.updateUser(userData).catch((e) => {
-			console.log(e);
+			console.log(e, JSON.stringify(e));
 		}).then(() => {
 			console.log("Done updating");
 			this.updating = false;
@@ -42,7 +42,7 @@ Tracker.prototype.initUpdateCycle = function() {
 					this.stopUpdating = false;
 					setTimeout(() => this.initUpdateCycle(), this.updateDelay);
 				}).catch((e) => {
-					console.log(e);
+					console.log(e, JSON.stringify(e));
 					this.stopUpdating = false;
 					setTimeout(() => this.initUpdateCycle(), this.updateDelay);
 				});
@@ -50,7 +50,7 @@ Tracker.prototype.initUpdateCycle = function() {
 				setTimeout(() => this.initUpdateCycle(), this.updateDelay);
 			}
 		}).catch((e) => {
-			console.log("Error updating", userData, e);
+			console.log("Error updating", userData, e, JSON.stringify(e));
 		});
 	} else {
 		setTimeout(() => this.initUpdateCycle(), 100);
