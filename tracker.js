@@ -50,7 +50,9 @@ Tracker.prototype.initUpdateCycle = function() {
 				setTimeout(() => this.initUpdateCycle(), this.updateDelay);
 			}
 		}).catch((e) => {
+			this.updating = false;
 			console.log("Error updating", userData, e, JSON.stringify(e));
+			setTimeout(() => this.initUpdateCycle(), this.updateDelay);
 		});
 	} else {
 		setTimeout(() => this.initUpdateCycle(), 100);
@@ -124,12 +126,11 @@ Tracker.prototype.track = function(serverID, userID, source, username) {
 				this.onTrackSuccess(serverID, userID, ratingData, source, username);
 				userUpdates[userID] = Date.now();
 			}
+			this.stopUpdating = false;
 		})
 		.catch((error) => {
-			this.onError(serverID, "Error adding user. " + error.toString());
-		})
-		.then(() => {
 			this.stopUpdating = false;
+			this.onError(serverID, "Error adding user. " + error.toString());
 		});
 	} else if(source === "Chesscom") {
 		getChesscomDataForUser(username)
@@ -144,12 +145,11 @@ Tracker.prototype.track = function(serverID, userID, source, username) {
 				this.onTrackSuccess(serverID, userID, ratingData, source, username);
 				userUpdates[userID] = Date.now();
 			}
+			this.stopUpdating = false;
 		})
 		.catch((error) => {
-			this.onError(serverID, "Error adding user. " + error.toString());
-		})
-		.then(() => {
 			this.stopUpdating = false;
+			this.onError(serverID, "Error adding user. " + error.toString());
 		});
 	}
 };
