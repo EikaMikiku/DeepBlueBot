@@ -154,7 +154,7 @@ Tracker.prototype.track = function(serverID, userID, source, username) {
 	}
 };
 
-Tracker.prototype.remove = function(serverID, userID) {
+Tracker.prototype.remove = function(serverID, userID, nomsg) {
 	if(this.updating) {
 		this.afterUpdate.push({
 			"type": "remove",
@@ -165,12 +165,15 @@ Tracker.prototype.remove = function(serverID, userID) {
 	this.stopUpdating = true;
 	let data = DataManager.getData();
 	if(data[serverID] && data[serverID][userID]) {
+		let username = data[serverID][userID].username;
 		delete data[serverID][userID];
 		delete userUpdates[userID];
 		DataManager.setData(data);
-		this.onRemoveSuccess(serverID, userID);
+		this.onRemoveSuccess(serverID, userID, username);
 	} else {
-		this.onError(serverID, "No tracking entry found to remove.");
+		if(!nomsg) {
+			this.onError(serverID, "No tracking entry found to remove.");
+		}
 	}
 	this.stopUpdating = false;
 };

@@ -28,7 +28,7 @@ client.on("guildMemberAdd", (guildMember) => {
 
 client.on("guildMemberRemove", (guildMember) => {
 	let channel = getBotChannel(guildMember.guild);
-	tracker.remove(guildMember.guild.id, guildMember.id);
+	tracker.remove(guildMember.guild.id, guildMember.id, true);
 });
 
 client.on("message", (message) => {
@@ -270,11 +270,11 @@ function getNick(serverID, userID) {
 	return member.nickname ? member.nickname : member.user.username;
 }
 
-function onRemoveSuccess(serverID, userID) {
+function onRemoveSuccess(serverID, userID, username) {
 	let guild = client.guilds.get(serverID);
 	let botChannel = getBotChannel(guild);
 	let member = guild.members.get(userID);
-	botChannel.send("No longer tracking " + getNick(guild.id, member.id))
+	botChannel.send("No longer tracking " + member ? getNick(guild.id, member.id) : username)
 	.catch((e) => console.log(JSON.stringify(e)));
 	removeRatingRole(serverID, userID);
 }
