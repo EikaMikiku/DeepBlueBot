@@ -43,18 +43,24 @@ client.on("message", (message) => {
 
 	//GLOBAL FEN COMMAND
 	if(splitMsg[0].toLowerCase() === "!fen") {
-		let fen = splitMsg.slice(1).join(" ");
-		let toMove = "";
-		if(fen.indexOf(" w ") !== -1) {
-			toMove = "**White to move.**";
-		} else if(fen.indexOf(" b ") !== -1) {
-			toMove = "**Black to move.**";
+		if(splitMsg.length > 1) {
+			let fen = splitMsg.slice(1).join(" ");
+			let toMove = "";
+			if(fen.indexOf(" w ") !== -1) {
+				toMove = "**White to move.**";
+			} else if(fen.indexOf(" b ") !== -1) {
+				toMove = "**Black to move.**";
+			}
+			let imageUrl = FEN_API_URL + encodeURIComponent(fen) + ".png";
+			message.channel.send(toMove, {
+				//.png added to make discord.js recognise an image
+				"file": FEN_API_URL + splitMsg.slice(1).join(" ") + ".png"
+			}).catch((e) => console.log(e));
+		} else {
+			message.channel.send("Wrong amount of parameters.")
+			.catch((e) => console.log(JSON.stringify(e)));
 		}
-		let imageUrl = FEN_API_URL + encodeURIComponent(fen) + ".png";
-		return message.channel.send(toMove, {
-			//.png added to make discord.js recognise an image
-			"file": FEN_API_URL + splitMsg.slice(1).join(" ") + ".png"
-		}).catch((e) => console.log(e));
+		return;
 	}
 
 	//CHANNEL CHECK
@@ -489,6 +495,9 @@ function getHelpEmbed() {
 		},{
 			"name": "!League",
 			"value": "Toggles league role."
+		},{
+			"name": "!Fen [FEN]",
+			"value": "Will show the board."
 		},{
 			"name": "!Lichess [Lichess username] [@Discord User Mention]",
 			"value": "Links discord user to a specific username on Lichess."
