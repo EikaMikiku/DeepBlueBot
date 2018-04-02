@@ -13,6 +13,8 @@ const tracker = new TrackerConstructor({
 });
 const msgSplitRegExp = /[^\s]+/gi;
 const RATINGS = settings.ratings;
+const FEN_API_URL = "https://fen.t3.at/?fen=";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //For FEN website, because it has outdated https certificate
 
 client.on("ready", () => {
 	console.log("The bot started!");
@@ -37,12 +39,29 @@ client.on("message", (message) => {
 		return;
 	}
 
+	let splitMsg = message.content.match(msgSplitRegExp);
+
+	//GLOBAL FEN COMMAND
+	if(splitMsg[0].toLowerCase() === "!fen") {
+		let fen = splitMsg.slice(1).join(" ");
+		let toMove = "";
+		if(fen.indexOf(" w ") !== -1) {
+			toMove = "**White to move.**";
+		} else if(fen.indexOf(" b ") !== -1) {
+			toMove = "**Black to move.**";
+		}
+		let imageUrl = FEN_API_URL + encodeURIComponent(fen) + ".png";
+		return message.channel.send(toMove, {
+			//.png added to make discord.js recognise an image
+			"file": FEN_API_URL + splitMsg.slice(1).join(" ") + ".png"
+		}).catch((e) => console.log(e));
+	}
+
 	//CHANNEL CHECK
 	if(message.channel.name !== settings.botChannelName) {
 		return;
 	}
 
-	let splitMsg = message.content.match(msgSplitRegExp);
 
 	console.log(`Command: ${message}`);
 
