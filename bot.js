@@ -13,8 +13,8 @@ const tracker = new TrackerConstructor({
 });
 const msgSplitRegExp = /[^\s]+/gi;
 const RATINGS = settings.ratings;
-const FEN_API_URL = "https://fen.t3.at/?fen=";
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; //For FEN website, because it has outdated https certificate
+const FEN_API_URL = "https://www.chess.com/dynboard";
+const LICHESS_ANALYSIS_FEN_URL = "https://lichess.org/analysis?fen=";
 
 client.on("ready", () => {
 	console.log("The bot started!");
@@ -46,16 +46,26 @@ client.on("message", (message) => {
 		if(splitMsg.length > 1) {
 			let fen = splitMsg.slice(1).join(" ");
 			let toMove = "";
-			if(fen.indexOf(" w ") !== -1) {
-				toMove = "**White to move.**";
-			} else if(fen.indexOf(" b ") !== -1) {
-				toMove = "**Black to move.**";
+			let flip = 0;
+			if(fen.indexOf(" b ") !== -1) {
+				toMove = "Black to move.";
+				flip = 1;
+			} else {
+				toMove = "White to move.";
 			}
-			let imageUrl = FEN_API_URL + encodeURIComponent(fen) + ".png";
-			message.channel.send(toMove, {
-				//.png added to make discord.js recognise an image
-				"file": FEN_API_URL + splitMsg.slice(1).join(" ") + ".png"
-			}).catch((e) => console.log(e));
+			let imageUrl = FEN_API_URL +
+				"?fen=" + encodeURIComponent(fen) +
+				"&board=" + settings.fenBoard +
+				"&piece=" + settings.fenBoardPieces +
+				"&coordinates=" + settings.fenBoardCoords +
+				"&size=" + settings.fenBoardSize +
+				"&flip=" + flip +
+				"&ext=.png"; //make discord recognise an image
+			let lichessUrl = LICHESS_ANALYSIS_FEN_URL + encodeURIComponent(fen);
+
+			message.channel.send({"embed": getFenEmbed(imageUrl, toMove, lichessUrl)})
+			.catch((e) => console.log(JSON.stringify(e)));
+
 		} else {
 			message.channel.send("Wrong amount of parameters.")
 			.catch((e) => console.log(JSON.stringify(e)));
@@ -67,7 +77,6 @@ client.on("message", (message) => {
 	if(message.channel.name !== settings.botChannelName) {
 		return;
 	}
-
 
 	console.log(`Command: ${message}`);
 
@@ -508,5 +517,16 @@ function getHelpEmbed() {
 			"name": "!Remove [Chesscom | Lichess] [Chess.com or Lichess Username]",
 			"value": "Removes a username on respective platform from the rating tracker."
 		}]
+	};
+}
+
+function getFenEmbed(imageUrl, text, lichessAnalysisUrl) {
+	return {
+		"color": settings.embedColor,
+		"title": text,
+		"url": lichessAnalysisUrl,
+		"image": {
+			"url": imageUrl
+		}
 	};
 }

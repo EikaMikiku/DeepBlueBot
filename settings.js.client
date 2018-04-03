@@ -23,4 +23,12 @@ module.exports = {
 	"chesscomProfileURL": "https://www.chess.com/member/|",
 	//Color that appears on the embed messages
 	"embedColor": 0xDD3333
+	//Fen board
+	"fenBoard": "icy_sea",
+	//Fen board pieces
+	"fenBoardPieces": "alpha",
+	//Fen board show coordinates
+	"fenBoardCoords": 0,
+	//Fen board size 1-3
+	"fenBoardSize": 2
 };
