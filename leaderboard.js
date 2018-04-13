@@ -2,16 +2,34 @@ const settings = require("./settings.js");
 const DataManagerConstructor = require("./datamanager.js");
 const DataManager = new DataManagerConstructor(settings.dataFile);
 
-function Leaderboard(config) {
+function Leaderboard(server, config) {
 	this.data = DataManager.getData();
+	this.server = server;
 	this.page = config.page || 1;
 	this.type = config.type || null;
+	this.active = config.active || false; //Only active filter
 }
 Leaderboard.prototype.getList = function(getNick) {
 	let collectedUsers = [];
 	for(serverID in this.data) {
 		let users = this.data[serverID];
 		for(userID in users) {
+			if(this.active) {
+				let member = this.server.members.find("id", userID);
+				if(member) {
+					let msg = member.lastMessage;
+					let time = msg.createdTimestamp;
+					let diff = Date.now() - time; //seconds since last msg
+					if(diff > 604800000) {
+						//Last message is over week old
+						continue; //skip user
+					}
+				} else {
+					console.log(userID, users[userID].username, "Not a member");
+					continue;
+				}
+			}
+
 			let ratingData = users[userID].ratings;
 			let ratingObj = {};
 			if(this.type === "Classical") {

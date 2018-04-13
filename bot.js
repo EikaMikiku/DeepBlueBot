@@ -168,10 +168,12 @@ client.on("message", (message) => {
 		return;
 	}
 
-	//LIST
-	if(splitMsg[0].toLowerCase() === "!list") {
+	//LIST || ACTIVE
+	if(splitMsg[0].toLowerCase() === "!list" || splitMsg[0].toLowerCase() === "!activelist") {
 		if(splitMsg.length === 1) {
-			let leaderboard = new LeaderboardConstructor({});
+			let leaderboard = new LeaderboardConstructor(message.guild, {
+				"active": splitMsg[0].toLowerCase() === "!activelist"
+			});
 			let list = leaderboard.getList(getNick);
 			list.embed.color = settings.embedColor;
 			message.channel.send(list).catch((e) => console.log(JSON.stringify(e)));
@@ -185,16 +187,18 @@ client.on("message", (message) => {
 					.catch((e) => console.log(JSON.stringify(e)));
 					return;
 				} else {
-					let leaderboard = new LeaderboardConstructor({
-						"page": val
+					let leaderboard = new LeaderboardConstructor(message.guild, {
+						"page": val,
+						"active": splitMsg[0].toLowerCase() === "!activelist"
 					});
 					let list = leaderboard.getList(getNick);
 					list.embed.color = settings.embedColor;
 					message.channel.send(list).catch((e) => console.log(JSON.stringify(e)));
 				}
 			} else {
-				let leaderboard = new LeaderboardConstructor({
-					"type": capitalise(val)
+				let leaderboard = new LeaderboardConstructor(message.guild, {
+					"type": capitalise(val),
+					"active": splitMsg[0].toLowerCase() === "!activelist"
 				});
 				let list = leaderboard.getList(getNick);
 				list.embed.color = settings.embedColor;
@@ -214,9 +218,10 @@ client.on("message", (message) => {
 				.catch((e) => console.log(JSON.stringify(e)));
 				return;
 			}
-			let leaderboard = new LeaderboardConstructor({
+			let leaderboard = new LeaderboardConstructor(message.guild, {
 				"type": capitalise(type),
-				"page": page
+				"page": page,
+				"active": splitMsg[0].toLowerCase() === "!activelist"
 			});
 			let list = leaderboard.getList(getNick);
 			list.embed.color = settings.embedColor;
