@@ -1,6 +1,6 @@
 {
   "name": "deepbluev2",
-  "version": "2.2.7",
+  "version": "2.2.9",
   "description": "Discord bot for a chess channel",
   "main": "bot.js",
   "scripts": {

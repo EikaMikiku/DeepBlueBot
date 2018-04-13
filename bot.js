@@ -273,7 +273,12 @@ client.on("message", (message) => {
 client.login(settings.token);
 
 function onModError(serverID, msg) {
+	let guild = client.guilds.get(serverID);
 	let channel = getModChannel(client.guilds.get(serverID));
+	let modRole = guild.roles.find("name", settings.modRoleName);
+	if(modRole) {
+		msg = `<@&${modRole.id}>\n` + msg;
+	}
 	channel.send(msg).catch((e) => console.log(JSON.stringify(e)));
 }
 
