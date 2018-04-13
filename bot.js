@@ -497,13 +497,13 @@ function getHelpEmbed() {
 			"name": "!Update",
 			"value": "Queue prioritised update of your ratings."
 		},{
-			"name": "!List [page]",
+			"name": "[!List | !ActiveList] [page]",
 			"value": "Show current leaderboard. Page is optional."
 		},{
-			"name": "!List [bullet | blitz | rapid | classical]",
+			"name": "[!List | !ActiveList] [bullet | blitz | rapid | classical]",
 			"value": "Show current leaderboard. Time control is optional."
 		},{
-			"name": "!List [bullet | blitz | rapid | classical] [page]",
+			"name": "[!List | !ActiveList] [bullet | blitz | rapid | classical] [page]",
 			"value": "Show current leaderboard. Time control is optional. Page is optional."
 		},{
 			"name": "!MyRank",
