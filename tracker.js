@@ -96,7 +96,7 @@ Tracker.prototype.track = function(serverID, userID, source, username) {
 		return;
 	}
 	this.stopUpdating = true;
-	username = username.replace(/[^\w\d]/g, "");
+	username = username.replace(/[^\w\d-]/g, "");
 	if(username.length === 0) {
 		return this.onError(serverID, "Invalid username.");
 	}
