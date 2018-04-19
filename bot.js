@@ -4,7 +4,7 @@ const client = new Discord.Client();
 const settings = require("./settings.js");
 const LeaderboardConstructor = require("./leaderboard.js");
 const TrackerConstructor = require("./tracker.js");
-const tracker = new TrackerConstructor({
+const tracker = new TrackerConstructor(client, {
 	"onTrackSuccess": onTrackSuccess, 
 	"onRemoveSuccess": onRemoveSuccess, 
 	"onRatingUpdate": onRatingUpdate, 

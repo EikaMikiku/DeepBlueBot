@@ -9,9 +9,10 @@ const userUpdates = {};
 const closedUsername = {};
 const cheatedUserID = {};
 
-function Tracker(events) {
+function Tracker(discord, events) {
 	this.stopUpdating = false;
 	this.updating = false;
+	this.discord = discord;
 	this.updateDelay = settings.updateDelay;
 	this.onTrackSuccess = events.onTrackSuccess || (() => {});
 	this.onRemoveSuccess = events.onRemoveSuccess || (() => {});
@@ -224,6 +225,14 @@ Tracker.prototype.updateUser = function(userData) {
 	let data = DataManager.getData();
 	let source = data[serverID][userID].source;
 	let username = data[serverID][userID].username;
+
+	//Update last message time
+	let server = this.discord.guilds.get(serverID);
+	let member = server.members.get(userID);
+	if(member && member.lastMessage) {
+		data[serverID][userID].lastMessageTime = member.lastMessage.createdTimestamp;
+	}
+
 	console.log("Updating", username, "on", source);
 	if(source.toLowerCase() === "lichess") {
 		return getLichessDataForUser(username)
@@ -241,7 +250,7 @@ Tracker.prototype.updateUser = function(userData) {
 				data[serverID][userID].ratings = ratingData;
 				DataManager.setData(data);
 			}
-		})
+		});
 	} else if(source.toLowerCase() === "chesscom") {
 		return getChesscomDataForUser(username)
 		.then((chesscomData) => {
@@ -256,7 +265,7 @@ Tracker.prototype.updateUser = function(userData) {
 				data[serverID][userID].ratings = ratingData;
 				DataManager.setData(data);
 			}
-		})
+		});
 	}
 }
 

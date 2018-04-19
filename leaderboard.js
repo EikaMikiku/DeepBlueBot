@@ -15,18 +15,15 @@ Leaderboard.prototype.getList = function(getNick) {
 		let users = this.data[serverID];
 		for(userID in users) {
 			if(this.active) {
-				let member = this.server.members.find("id", userID);
-				if(member) {
-					let msg = member.lastMessage;
-					let time = msg.createdTimestamp;
-					let diff = Date.now() - time; //seconds since last msg
-					if(diff > 604800000) {
-						//Last message is over week old
-						continue; //skip user
-					}
-				} else {
-					console.log(userID, users[userID].username, "Not a member");
-					continue;
+				let lastMessageTime = users[userID].lastMessageTime;
+				if(!lastMessageTime) {
+					//Last message now found
+					continue; //skip user
+				}
+				let diff = Date.now() - lastMessageTime; //seconds since last msg
+				if(diff > 604800000) {
+					//Last message is over week old
+					continue; //skip user
 				}
 			}
 
