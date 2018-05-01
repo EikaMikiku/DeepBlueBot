@@ -17,6 +17,8 @@ module.exports = {
 	"leagueRoleName": "League",
 	//Role for the arena
 	"arenaRoleName": "Arena",
+	//Role for study
+	"studyRoleName": "Study",
 	//Lichess profile url. "|" is replaced with username
 	"lichessProfileURL": "https://lichess.org/@/|",
 	//Chess.com profile url. "|" is replaced with username

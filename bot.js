@@ -169,10 +169,10 @@ client.on("message", (message) => {
 	}
 
 	//LIST || ACTIVE
-	if(splitMsg[0].toLowerCase() === "!list" || splitMsg[0].toLowerCase() === "!activelist") {
+	if(splitMsg[0].toLowerCase() === "!list" || splitMsg[0].toLowerCase() === "!active") {
 		if(splitMsg.length === 1) {
 			let leaderboard = new LeaderboardConstructor(message.guild, {
-				"active": splitMsg[0].toLowerCase() === "!activelist"
+				"active": splitMsg[0].toLowerCase() === "!active"
 			});
 			let list = leaderboard.getList(getNick);
 			list.embed.color = settings.embedColor;
@@ -189,7 +189,7 @@ client.on("message", (message) => {
 				} else {
 					let leaderboard = new LeaderboardConstructor(message.guild, {
 						"page": val,
-						"active": splitMsg[0].toLowerCase() === "!activelist"
+						"active": splitMsg[0].toLowerCase() === "!active"
 					});
 					let list = leaderboard.getList(getNick);
 					list.embed.color = settings.embedColor;
@@ -198,7 +198,7 @@ client.on("message", (message) => {
 			} else {
 				let leaderboard = new LeaderboardConstructor(message.guild, {
 					"type": capitalise(val),
-					"active": splitMsg[0].toLowerCase() === "!activelist"
+					"active": splitMsg[0].toLowerCase() === "!active"
 				});
 				let list = leaderboard.getList(getNick);
 				list.embed.color = settings.embedColor;
@@ -221,7 +221,7 @@ client.on("message", (message) => {
 			let leaderboard = new LeaderboardConstructor(message.guild, {
 				"type": capitalise(type),
 				"page": page,
-				"active": splitMsg[0].toLowerCase() === "!activelist"
+				"active": splitMsg[0].toLowerCase() === "!active"
 			});
 			let list = leaderboard.getList(getNick);
 			list.embed.color = settings.embedColor;
@@ -273,6 +273,20 @@ client.on("message", (message) => {
 		}
 	}
 
+	//STUDY ROLE TOGGLE
+	if(splitMsg[0].toLowerCase() === "!study") {
+		let studyRole = message.member.roles.find("name", settings.studyRoleName);
+		if(studyRole) {
+			//Remove the role
+			message.member.removeRole(studyRole).catch((e) => console.log(JSON.stringify(e)));
+			message.channel.send("Study role removed.");
+		} else {
+			//Add the role
+			let role = message.guild.roles.find("name", settings.studyRoleName);
+			message.member.addRole(role).catch((e) => console.log(JSON.stringify(e)));
+			message.channel.send("Study role added.");
+		}
+	}
 });
 
 client.login(settings.token);
@@ -318,7 +332,7 @@ function onRemoveSuccess(serverID, userID, username) {
 	let guild = client.guilds.get(serverID);
 	let botChannel = getBotChannel(guild);
 	let member = guild.members.get(userID);
-	botChannel.send("No longer tracking " + member ? getNick(guild.id, member.id) : username)
+	botChannel.send("No longer tracking " + (member ? getNick(guild.id, member.id) : username))
 	.catch((e) => console.log(JSON.stringify(e)));
 	removeRatingRole(serverID, userID);
 }
@@ -326,6 +340,9 @@ function onRemoveSuccess(serverID, userID, username) {
 function removeRatingRole(serverID, userID) {
 	let guild = client.guilds.get(serverID);
 	let member = guild.members.get(userID);
+	if(!member) {
+		return;
+	}
 	let roles = getMemberRatingRoles(member);
 	for(let i = 0; i < roles.length; i++) {
 		member.removeRole(roles[i]).catch((e) => console.log(JSON.stringify(e)));
@@ -497,13 +514,13 @@ function getHelpEmbed() {
 			"name": "!Update",
 			"value": "Queue prioritised update of your ratings."
 		},{
-			"name": "[!List | !ActiveList] [page]",
+			"name": "[!List | !Active] [page]",
 			"value": "Show current leaderboard. Page is optional."
 		},{
-			"name": "[!List | !ActiveList] [bullet | blitz | rapid | classical]",
+			"name": "[!List | !Active] [bullet | blitz | rapid | classical]",
 			"value": "Show current leaderboard. Time control is optional."
 		},{
-			"name": "[!List | !ActiveList] [bullet | blitz | rapid | classical] [page]",
+			"name": "[!List | !Active] [bullet | blitz | rapid | classical] [page]",
 			"value": "Show current leaderboard. Time control is optional. Page is optional."
 		},{
 			"name": "!MyRank",
@@ -514,6 +531,9 @@ function getHelpEmbed() {
 		},{
 			"name": "!League",
 			"value": "Toggles league role."
+		},{
+			"name": "!Study",
+			"value": "Toggles study role."
 		},{
 			"name": "!Fen [FEN]",
 			"value": "Will show the board."
